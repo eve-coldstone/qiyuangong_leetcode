@@ -32,27 +32,69 @@ def twoSum_hash_map(nums, target):
             return [num_map[complement], index]
         num_map[num] = index
 
+
+def twoSum_all_pairs_brute(nums, target):
+    result = []
+    n = len(nums)
+    for i in range(n):
+        for j in range(i+1, n):
+            if nums[i] + nums[j] == target:
+                result.append([i, j])
+    return result
+
+from collections import defaultdict
+def twoSum_all_pairs_hash(nums, target):
+    num_map = defaultdict(list)  # value → list of indices
+    result = []
+
+    for index, num in enumerate(nums):
+        complement = target - num
+        if complement in num_map:
+            # add all pairs with previous occurrences of complement
+            for comp_index in num_map[complement]:
+                result.append([comp_index, index])
+        num_map[num].append(index)
+    return result
+
 if __name__ == "__main__":
     # Example usage
-    nums = [2, 9, 1, -1, 0, 11, 15]
+    nums = [2, 9, 1, -1, 0, 11, 15, 7, 20, -2, -6]
     target = 9
+
+    result = twoSum_brute_force(nums, target)
+    print(f"-----Brute Force Alg-----")
+    print(f"Indices of numbers that add up to {target}: {result}")
+    brute_force_time = measure_time(twoSum_brute_force, nums, target)
+    print(f"Brute Force avg time: {brute_force_time:.2f} μs")
 
     # start = time.time()
     result = twoSum_two_pointer(nums, target)
-    two_pointer_time = measure_time(twoSum_two_pointer, nums, target)
     # end = time.time()
     # elapsed_us = (end - start) *1000000
     print(f"-----Two Pointer Alg-----")
     print(f"Indices of numbers that add up to {target}: {result}")
     # print(f"Running time: {elapsed_us:.2f} micro seconds")
-    print(f"Hash Map avg time: {two_pointer_time:.2f} μs")
+    two_pointer_time = measure_time(twoSum_two_pointer, nums, target)
+    print(f"Two Pointer avg time: {two_pointer_time:.2f} μs")
 
     # start = time.time()
     result = twoSum_hash_map(nums, target)
-    hash_map_time = measure_time(twoSum_hash_map, nums, target)
     # end = time.time()
     # elapsed_us = (end - start) *1000000
     print(f"-----Hash Map Alg-----")
     print(f"Indices of numbers that add up to {target}: {result}")
     # print(f"Running time: {elapsed_us:.2f} micro seconds")
+    hash_map_time = measure_time(twoSum_hash_map, nums, target)
     print(f"Hash Map avg time: {hash_map_time:.2f} μs")
+
+    result = twoSum_all_pairs_brute(nums, target)
+    print(f"-----Two Sum ALL pairs brute force Alg-----")
+    print(f"Indices of numbers that add up to {target}: {result}")
+    all_pairs_brute_force_time = measure_time(twoSum_all_pairs_hash, nums, target)
+    print(f"Hash Map avg time: {all_pairs_brute_force_time:.2f} μs")
+
+    result = twoSum_all_pairs_hash(nums, target)
+    print(f"-----Two Sum ALL pairs hash map Alg-----")
+    print(f"Indices of numbers that add up to {target}: {result}")
+    all_pairs_hash_map_time = measure_time(twoSum_all_pairs_hash, nums, target)
+    print(f"Hash Map avg time: {all_pairs_hash_map_time:.2f} μs")
