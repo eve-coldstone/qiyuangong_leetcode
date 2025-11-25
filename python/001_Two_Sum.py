@@ -1,6 +1,6 @@
 def twoSum(nums, target):
-    # two point
-    nums_index = [(v, index) for index, v in enumerate(nums)]
+    # two pointer
+    nums_index = [(val, index) for index, val in enumerate(nums)]
     nums_index.sort()
     begin, end = 0, len(nums) - 1
     while begin < end:
