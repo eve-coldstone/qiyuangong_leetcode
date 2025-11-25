@@ -56,6 +56,28 @@ def twoSum_all_pairs_hash(nums, target):
         num_map[num].append(index)
     return result
 
+def twoSum_all_pairs_two_pointer(nums, target):
+    nums_sorted = sorted(nums)
+    l, r = 0, len(nums_sorted) - 1
+    result = []
+
+    while l < r:
+        curr_sum = nums_sorted[l] + nums_sorted[r]
+        if curr_sum == target:
+            result.append([nums_sorted[l], nums_sorted[r]])
+            # move pointers, skip duplicates
+            left_val, right_val = nums_sorted[l], nums_sorted[r]
+            while l < r and nums_sorted[l] == left_val:
+                l += 1
+            while l < r and nums_sorted[r] == right_val:
+                r -= 1
+        elif curr_sum < target:
+            l += 1
+        else:
+            r -= 1
+
+    return result
+
 if __name__ == "__main__":
     # Example usage
     nums = [2, 9, 1, -1, 0, 11, 15, 7, 20, -2, -6]
@@ -91,10 +113,16 @@ if __name__ == "__main__":
     print(f"-----Two Sum ALL pairs brute force Alg-----")
     print(f"Indices of numbers that add up to {target}: {result}")
     all_pairs_brute_force_time = measure_time(twoSum_all_pairs_hash, nums, target)
-    print(f"Hash Map avg time: {all_pairs_brute_force_time:.2f} μs")
+    print(f"All pairs brute force avg time: {all_pairs_brute_force_time:.2f} μs")
 
     result = twoSum_all_pairs_hash(nums, target)
     print(f"-----Two Sum ALL pairs hash map Alg-----")
     print(f"Indices of numbers that add up to {target}: {result}")
     all_pairs_hash_map_time = measure_time(twoSum_all_pairs_hash, nums, target)
-    print(f"Hash Map avg time: {all_pairs_hash_map_time:.2f} μs")
+    print(f"All pairs Hash Map avg time: {all_pairs_hash_map_time:.2f} μs")
+
+    result = twoSum_all_pairs_two_pointer(nums, target)
+    print(f"-----Two Sum ALL pairs two pointer Alg-----")
+    print(f"Indices of numbers that add up to {target}: {result}")
+    all_pairs_two_pointer_time = measure_time(twoSum_all_pairs_two_pointer, nums, target)
+    print(f"All pairs two pointer avg time: {all_pairs_two_pointer_time:.2f} μs")
