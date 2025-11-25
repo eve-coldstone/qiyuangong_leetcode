@@ -1,3 +1,4 @@
+import time
 # two pointer
 def twoSum_two_pointer(nums, target):
     nums_index = [(val, index) for index, val in enumerate(nums)]
@@ -25,10 +26,19 @@ if __name__ == "__main__":
     # Example usage
     nums = [2, 7, 11, 15]
     target = 9
+
+    start = time.time()
     result = twoSum_two_pointer(nums, target)
+    end = time.time()
+    elapsed_us = (end - start) *1000000
     print(f"-----Two Pointer Alg-----")
     print(f"Indices of numbers that add up to {target}: {result}")
+    print(f"Running time: {elapsed_us:.2f} micro seconds")
 
+    start = time.time()
     result = twoSum_hash_map(nums, target)
+    end = time.time()
+    elapsed_us = (end - start) *1000000
     print(f"-----Hash Map Alg-----")
     print(f"Indices of numbers that add up to {target}: {result}")
+    print(f"Running time: {elapsed_us:.2f} micro seconds")
