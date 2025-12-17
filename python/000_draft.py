@@ -21,3 +21,30 @@ for index, num in enumerate(nums):
         num_map[num] = index
         print(f"final num_map is :{num_map}")
 """
+
+# 002
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def list_to_linkedList(lst):
+        dummy = ListNode()
+        curr = dummy
+        for val in lst:
+            curr.next = ListNode(val)
+            curr = curr.next
+        return dummy.next
+
+def linkedList_to_list(node):
+    result = []
+    while node:
+        result.append(node.val)
+        node = node.next
+    return result
+
+lst = {1,4,6,7}
+lkd_lst = list_to_linkedList(lst)
+new_lst = linkedList_to_list(lkd_lst)
+print(f"result is: {lkd_lst}, type is: {type(lkd_lst)}")
+print(f"result is: {new_lst}, type is: {type(new_lst)}")
