@@ -82,6 +82,7 @@ def longestPalindrome_Manachers_algorithm(s):
 
     # Transform string
     T = "^#" + "#".join(s) + "#$"
+    print(f"T is: ", T)
     n = len(T)
     P = [0] * n
     center = right = 0

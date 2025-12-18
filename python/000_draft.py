@@ -61,6 +61,9 @@ print(f"float is : ", float("-inf"))
 s = "abcdef"
 # res = bc, from index 1 to index 3-1
 print(s[1:3])
+
+# a*b*c*d*e*f
+print("*".join(s))
 for i in range(5, 9):
     # print 5,6,7,8
     print(i)
