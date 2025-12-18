@@ -1,88 +1,112 @@
-class Solution(object):
-    def longestPalindrome(self, s):
-        """
-        :type s: str
-        :rtype: str
-        """
-        # my solution
-        # expand string according to Manacher algorithm
-        # but extend radius step by step
-        ls = len(s)
-        if ls <= 1 or len(set(s)) == 1:
-            return s
-        # create a new list like this: "abc"->"a#b#c"
-        temp_s = '#'.join('{}'.format(s))
-        # print temp_s
-        tls = len(temp_s)
-        seed = range(1, tls - 1)
-        # this table stores the max length palindrome
-        len_table = [0] * tls
-        for step in range(1, tls / 2 + 1):
-            final = []
-            for pos in seed:
-                if pos - step < 0 or pos + step >= tls:
-                    continue
-                if temp_s[pos - step] != temp_s[pos + step]:
-                    continue
-                final.append(pos)
-                if temp_s[pos - step] == '#':
-                    continue
-                len_table[pos] = step
-            seed = final
-        max_pos, max_step = 0, 0
-        for i, s in enumerate(len_table):
-            if s >= max_step:
-                max_step = s
-                max_pos = i
-        return temp_s[max_pos - max_step:max_pos + max_step + 1].translate(None, '#')
+from timer_utils import measure_time
+# time O(n^2), space O(1)
+def longestPalindrome_expand_around_center(s):
+    if len(s) <= 1:
+        return s
 
-    # def longestPalindrome(self, s):
-    #     # example in leetcode book
-    #     max_left, max_right = 0, 0
-    #     ls = len(s)
-    #     for i in range(ls):
-    #         len1 = self.expandAroundCenter(s, i, i)
-    #         len2 = self.expandAroundCenter(s, i, i + 1)
-    #         max_len = max(len1, len2)
-    #         if (max_len > max_right - max_left):
-    #             max_left = i - (max_len - 1) / 2
-    #             max_right = i + max_len / 2
-    #     return s[max_left:max_right + 1]
-    #
-    # def expandAroundCenter(self, s, left, right):
-    #     ls = len(s)
-    #     while (left >= 0 and right < ls and s[left] == s[right]):
-    #         left -= 1
-    #         right += 1
-    #     return right - left - 1
+    res = ""
 
-    # def longestPalindrome(self, s):
-    #     #Manacher algorithm
-    #     #http://en.wikipedia.org/wiki/Longest_palindromic_substring
-    #     # Transform S into T.
-    #     # For example, S = "abba", T = "^#a#b#b#a#$".
-    #     # ^ and $ signs are sentinels appended to each end to avoid bounds checking
-    #     T = '#'.join('^{}$'.format(s))
-    #     n = len(T)
-    #     P = [0] * n
-    #     C = R = 0
-    #     for i in range (1, n-1):
-    #         P[i] = (R > i) and min(R - i, P[2*C - i]) # equals to i' = C - (i-C)
-    #         # Attempt to expand palindrome centered at i
-    #         while T[i + 1 + P[i]] == T[i - 1 - P[i]]:
-    #             P[i] += 1
-    #
-    #         # If palindrome centered at i expand past R,
-    #         # adjust center based on expanded palindrome.
-    #         if i + P[i] > R:
-    #             C, R = i, i + P[i]
-    #
-    #     # Find the maximum element in P.
-    #     maxLen, centerIndex = max((n, i) for i, n in enumerate(P))
-    #     return s[(centerIndex - maxLen)//2: (centerIndex + maxLen)//2]
+    for i in range(len(s)):
+        # odd length
+        p1 = expand(s, i, i)
+        # even length
+        p2 = expand(s, i, i + 1)
+
+        if len(p1) > len(res):
+            res = p1
+        if len(p2) > len(res):
+            res = p2
+
+    return res
+
+def expand(s, left, right):
+    while left >= 0 and right < len(s) and s[left] == s[right]:
+        left -= 1
+        right += 1
+    return s[left + 1:right]
+
+
+# time O(n^2), space O(n^2)
+def longestPalindrome_dynamic_programming(s):
+    n = len(s)
+    if n <= 1:
+        return s
+
+    dp = [[False] * n for _ in range(n)]
+    start = 0
+    max_len = 1
+
+    # length 1 substrings
+    for i in range(n):
+        dp[i][i] = True
+
+    # check substrings of length >= 2
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+
+            if s[i] == s[j] and (length <= 2 or dp[i + 1][j - 1]):
+                dp[i][j] = True
+                if length > max_len:
+                    max_len = length
+                    start = i
+
+    return s[start:start + max_len]
+
+
+
+
+# time O(n), space O(n)
+def longestPalindrome_Manachers_algorithm(s):
+    if not s:
+        return ""
+
+    # Transform string
+    T = "^#" + "#".join(s) + "#$"
+    n = len(T)
+    P = [0] * n
+    center = right = 0
+
+    for i in range(1, n - 1):
+        mirror = 2 * center - i
+
+        if i < right:
+            P[i] = min(right - i, P[mirror])
+
+        # expand around center i
+        while T[i + P[i] + 1] == T[i - P[i] - 1]:
+            P[i] += 1
+
+        # update center and right boundary
+        if i + P[i] > right:
+            center = i
+            right = i + P[i]
+
+    # find max palindrome
+    max_len = 0
+    center_index = 0
+    for i in range(1, n - 1):
+        if P[i] > max_len:
+            max_len = P[i]
+            center_index = i
+
+    # extract result
+    start = (center_index - max_len) // 2
+    return s[start:start + max_len]
 
 
 if __name__ == '__main__':
     # begin
-    s = Solution()
-    print(s.longestPalindrome("abcbe"))
+    test = "abacdcabbaabacdcabbaabacdcabbaabacdcabbaabacdcabbaabacdcabbaabacdcabbaabacdcabbaabacdcabbaabacdcabba"
+    
+    print(longestPalindrome_expand_around_center(test))
+    expand_around_center_time = measure_time(longestPalindrome_expand_around_center, test)
+    print(f"expand_around_center_time: {expand_around_center_time:.2f} μs")
+    
+    print(longestPalindrome_dynamic_programming(test))
+    dynamic_programming_time = measure_time(longestPalindrome_dynamic_programming, test)
+    print(f"Brute Force avg time: {dynamic_programming_time:.2f} μs")
+
+    print(longestPalindrome_Manachers_algorithm(test))
+    Manachers_algorithm_time = measure_time(longestPalindrome_expand_around_center, test)
+    print(f"Brute Force avg time: {Manachers_algorithm_time:.2f} μs")
