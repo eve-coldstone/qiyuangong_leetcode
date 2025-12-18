@@ -21,7 +21,7 @@ for index, num in enumerate(nums):
         num_map[num] = index
         print(f"final num_map is :{num_map}")
 """
-
+"""
 # 002
 class ListNode:
     def __init__(self, val=0, next=None):
@@ -48,3 +48,7 @@ lkd_lst = list_to_linkedList(lst)
 new_lst = linkedList_to_list(lkd_lst)
 print(f"result is: {lkd_lst}, type is: {type(lkd_lst)}")
 print(f"result is: {new_lst}, type is: {type(new_lst)}")
+"""
+
+#004
+print(f"float is : ", float("-inf"))
