@@ -50,5 +50,20 @@ print(f"result is: {lkd_lst}, type is: {type(lkd_lst)}")
 print(f"result is: {new_lst}, type is: {type(new_lst)}")
 """
 
+
+"""
 #004
 print(f"float is : ", float("-inf"))
+"""
+
+
+#005
+s = "abcdef"
+# res = bc, from index 1 to index 3-1
+print(s[1:3])
+for i in range(5, 9):
+    # print 5,6,7,8
+    print(i)
+for j in range(3):
+    # print 0,1,2
+    print(j)

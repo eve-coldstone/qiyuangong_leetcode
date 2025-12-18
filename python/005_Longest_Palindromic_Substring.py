@@ -32,25 +32,44 @@ def longestPalindrome_dynamic_programming(s):
     if n <= 1:
         return s
 
+    # dp[i][j] == True if s[i:j+1] is a palindrome
     dp = [[False] * n for _ in range(n)]
-    start = 0
-    max_len = 1
 
-    # length 1 substrings
+    start = 0       # starting index of longest palindrome
+    max_len = 1     # length of longest palindrome
+
+    # Base case: single characters
     for i in range(n):
         dp[i][i] = True
 
-    # check substrings of length >= 2
-    for length in range(2, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
+    # Check substrings of increasing length
+    # length = j - i + 1 (end - start + 1)
+    # length possible val 2,3,4,...,n
 
-            if s[i] == s[j] and (length <= 2 or dp[i + 1][j - 1]):
+    """
+    You must compute smaller substrings first, so that dp[i+1][j-1] is already known.
+    That’s why we iterate by substring length, not by indices:
+    """
+    # for length possible values...
+    for length in range(2, n + 1):
+        # for start point possible values...
+        for i in range(n - length + 1):
+            # for length = end - start + 1
+            # so end = start + length - 1
+            j = i + length - 1
+            # length range from 2, so min is 2;
+            # if length is 2, s[i] = s[j] is good enough
+            # if length is more, we check the inner layer
+            if s[i] == s[j] and (length == 2 or dp[i + 1][j - 1]):
                 dp[i][j] = True
                 if length > max_len:
                     max_len = length
                     start = i
 
+    # length = end - start + 1
+    # end = start + len - 1
+    # but string[start, end + 1]
+    # aka string[start, start + len]
     return s[start:start + max_len]
 
 
@@ -105,8 +124,8 @@ if __name__ == '__main__':
     
     print(longestPalindrome_dynamic_programming(test))
     dynamic_programming_time = measure_time(longestPalindrome_dynamic_programming, test)
-    print(f"Brute Force avg time: {dynamic_programming_time:.2f} μs")
+    print(f"dynamic_programming_time: {dynamic_programming_time:.2f} μs")
 
     print(longestPalindrome_Manachers_algorithm(test))
     Manachers_algorithm_time = measure_time(longestPalindrome_expand_around_center, test)
-    print(f"Brute Force avg time: {Manachers_algorithm_time:.2f} μs")
+    print(f"Manachers_algorithm_time: {Manachers_algorithm_time:.2f} μs")
