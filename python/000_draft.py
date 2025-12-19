@@ -57,6 +57,7 @@ print(f"float is : ", float("-inf"))
 """
 
 
+"""
 #005
 s = "abcdef"
 # res = bc, from index 1 to index 3-1
@@ -70,3 +71,13 @@ for i in range(5, 9):
 for j in range(3):
     # print 0,1,2
     print(j)
+"""
+
+#007
+from collections import deque
+
+d = deque()
+d.append(1)
+d.append(2)
+print(len(d))
+print(d.pop())
