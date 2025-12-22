@@ -66,6 +66,8 @@ class Solution(object):
             i += 1
 
         # 3. Convert digits
+        # ord(char) returns the Unicode (ASCII) number for a character.
+        # substracting to convert a digit character into its integer value.
         while i < n and s[i].isdigit():
             res = res * 10 + (ord(s[i]) - ord("0"))
             i += 1
@@ -85,11 +87,10 @@ class Solution(object):
 
 
 
-
 if __name__ == '__main__':
     # begin
     s = Solution()
-    string = "-1123456785126489655"
+    string = "-11234567851264896c55"
     print(s.myAtoi_Dict(string))
     print(f"-----Using Dictionary Alg-----")
     dict_time = measure_time(s.myAtoi_Dict, string)
