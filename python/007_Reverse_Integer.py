@@ -9,7 +9,6 @@ def reverse(n):
     if rev>2**31 or rev==0 or temp>0 and rev==2*31:
         return 0
     return rev*(temp//abs(temp))
-__import__("atexit").register(lambda: open("display_runtime.txt", "w").write("000"))
 
 if __name__ == "__main__":
     x = -123050

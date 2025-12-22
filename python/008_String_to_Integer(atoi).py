@@ -1,43 +1,101 @@
+from timer_utils import measure_time
+
 class Solution(object):
-    def myAtoi(self, str):
+    def myAtoi_Dict(self, s):
         """
         :type str: str
         :rtype: int
         """
+        
+        res = 0
         sign = 1
-        max_int, min_int = 2147483647, -2147483648
-        result, pos = 0, 0
-        ls = len(str)
-        while pos < ls and str[pos] == ' ':
-            pos += 1
-        if pos < ls and str[pos] == '-':
-            sign = -1
-            pos += 1
-        elif pos < ls and str[pos] == '+':
-            pos += 1
-        while pos < ls and ord(str[pos]) >= ord('0') and ord(str[pos]) <= ord('9'):
-            num = ord(str[pos]) - ord('0')
-            if result > max_int / 10 or ( result == max_int / 10 and num >= 8):
-                if sign == -1:
-                    return min_int
-                return max_int
-            result = result * 10 + num
-            pos += 1
-        return sign * result
+        started = False   # have we started reading sign/digits?
 
-    # def myAtoi(self, s):
-    #     #https://leetcode.com/discuss/83626/line-python-solution-eafp-instead-lbyl-easier-logic-beats-24%25
-    #     try:
-    #         s = s.lstrip() + '$' # remove leading spaces and append an end mark
-    #         for i, ch in enumerate(s):
-    #             if not (ch in '+-' or '0' <= ch <= '9'):
-    #                 result = int(s[:i])
-    #                 return -2 ** 31 if result < -2 ** 31 else 2 ** 31 - 1 if result > 2 ** 31 - 1 else result
-    #     except:
-    #         return 0
+        my_dict = {
+            "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
+            "5": 5, "6": 6, "7": 7, "8": 8, "9": 9
+        }
+
+        for c in s:
+            # Skip leading spaces
+            if not started and c == " ":
+                continue
+
+            # Handle sign (only once, before digits)
+            if not started and (c == "+" or c == "-"):
+                sign = -1 if c == "-" else 1
+                started = True
+                continue
+
+            # Read digits using dictionary
+            if c in my_dict:
+                started = True
+                res = res * 10 + my_dict[c]
+                continue
+
+            # Stop at first invalid character
+            break
+
+        res *= sign
+
+        # Clamp to 32-bit signed integer range
+        INT_MIN = -2**31
+        INT_MAX = 2**31 - 1
+
+        if res < INT_MIN:
+            return INT_MIN
+        if res > INT_MAX:
+            return INT_MAX
+
+        return res
+
+    def myAtoi_NO_Dict(self, s):
+        i = 0
+        n = len(s)
+        sign = 1
+        res = 0
+
+        # 1. Skip leading spaces
+        while i < n and s[i] == " ":
+            i += 1
+
+        # 2. Handle optional sign
+        if i < n and (s[i] == "+" or s[i] == "-"):
+            if s[i] == "-":
+                sign = -1
+            i += 1
+
+        # 3. Convert digits
+        while i < n and s[i].isdigit():
+            res = res * 10 + (ord(s[i]) - ord("0"))
+            i += 1
+
+        res *= sign
+
+        # 4. Clamp to 32-bit signed integer range
+        INT_MIN = -2**31
+        INT_MAX = 2**31 - 1
+
+        if res < INT_MIN:
+            return INT_MIN
+        if res > INT_MAX:
+            return INT_MAX
+
+        return res
+
+
 
 
 if __name__ == '__main__':
     # begin
     s = Solution()
-    print s.myAtoi("+-2")
+    string = "-1123456785126489655"
+    print(s.myAtoi_Dict(string))
+    print(f"-----Using Dictionary Alg-----")
+    dict_time = measure_time(s.myAtoi_Dict, string)
+    print(f"avg time: {dict_time:.2f} μs")
+
+    print(s.myAtoi_NO_Dict(string))
+    print(f"-----NOT Using Dictionary Alg-----")
+    no_dict_time = measure_time(s.myAtoi_NO_Dict, string)
+    print(f"avg time: {no_dict_time:.2f} μs")
