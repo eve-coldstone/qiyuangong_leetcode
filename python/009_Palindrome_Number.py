@@ -1,67 +1,62 @@
-# class Solution(object):
-#     def isPalindrome(self, x):
-#         """
-#         :type x: int
-#         :rtype: bool
-#         """
-
+from collections import deque
 class Solution(object):
-    def isPalindrome(self, x: int) -> bool:
-        x = str(x)
-        if (x == x[::-1]):
+    def isPalindrome_brute_force(self, x):
+        temp = x
+        if temp < 0:
+            return False
+
+        y = 0
+        while (x != 0):
+            y = y * 10 + x % 10
+            x //= 10
+        
+        if temp == y:
             return True
-        return False        
-        
-        
-    # def isPalindrome(self, x):
-    #     if x < 0:
-    #         return False
-    #     ls = len(str(x))
-    #     tmp = x
-    #     for i in range(int(ls/2)):
-    #         right = int(tmp % 10)
-    #         left = tmp / (10 ** (ls - 2 * i - 1))
-    #         left = int(left % 10)
-    #         if left != right:
-    #             return False
-    #         tmp = tmp // 10
-    #     return True
+        else:
+            return False
     
+    def isPalindrome_deque(self, x):
+        if x < 0:
+            return False
+        d = deque()
+        while (x != 0):
+            d.append(x % 10)
+            x //= 10
 
-    # def isPalindrome(self, x):
-    #     #leetcode book
-    #     if x < 0:
-    #         return False
-    #     div = 1
-    #     while x / div >= 10:
-    #         div *= 10
-    #     while x != 0:
-    #         left = x / div
-    #         right = x % 10
-    #         if left != right:
-    #             return False
-    #         x = (x % div) / 10
-    #         div /= 100
-    #     return True
+        # as long as my deque is NOT empty !d
+        # better yet, as long as we got more than 1 left; 
+        while (len(d) >1):
+            if d.pop() != d.popleft():
+                return False
+            
+        return True
+    
+    def isPalindrome_string_based(self, x):
+        s = str(x)
+        return s == s[::-1] 
+    
+    def isPalindrome_half_reverse(self, x):
+        # Negative numbers and numbers ending in 0 (except 0 itself) can't be palindromes
+        if x < 0 or (x % 10 == 0 and x != 0):
+            return False
 
+        reversed_half = 0
 
-    # def isPalindrome(self, x):
-    #     # reverse number
-    #     if x < 0:
-    #         return False
-    #     rev_x = 0
-    #     temp = x
-    #     while temp != 0:
-    #         curr = temp % 10
-    #         rev_x = rev_x * 10 + curr
-    #         temp = temp // 10
-    #     if rev_x == x:
-    #         return True
-    #     else:
-    #         return False
+        while x > reversed_half:
+            reversed_half = reversed_half * 10 + x % 10
+            x //= 10
+
+        # For even digits: x == reversed_half
+        # For odd digits: x == reversed_half // 10
+        return x == reversed_half or x == reversed_half // 10
+
 
 
 if __name__ == '__main__':
     # begin
     s = Solution()
-    print s.isPalindrome(1001)
+    print (s.isPalindrome_brute_force(1001))
+    print (s.isPalindrome_deque(1001))
+    print (s.isPalindrome_string_based(1001))
+    print (s.isPalindrome_half_reverse(1001))
+    
